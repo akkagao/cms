@@ -5,6 +5,7 @@
 - web框架使用 [beego](http://beego.me/)
 - 前台页面使用 [easyUI](http://www.jeasyui.net/demo/380.html) （easyUI 中文网）
 - 页面中使用的树组件为  [zTree](http://www.treejs.cn/v3/main.php#_zTreeInfo)
+
 ## 软件环境
 - 开发工具： VS Code
 - 数据库： mysql
