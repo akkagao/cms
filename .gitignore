@@ -1,0 +1,9 @@
+/bin
+-x
+*.exe
+*.exe~
+*.log
+debug
+/.vscode
+/.idea
+*.tar.gz

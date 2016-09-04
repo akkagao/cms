@@ -1,0 +1,38 @@
+<!--添加权限窗口 -->
+<div class="easyui-layout" data-options="fit:true">
+    <!--基础信息窗口 start-->
+    <div data-options="region:'west',split:true" border="false" style="width:350px;padding:10px 10px 20px 50px">
+        <form id="addamdusergroup" method="post">
+            <table cellpadding="5">
+                <tr>
+                    <td>管理员组名称:</td>
+                    <td><input class="easyui-textbox" type="text" name="admgroupusername" required="true" missingMessage="不能为空"></input>
+                    </td>
+                </tr>
+                <tr>
+                    <td>描述信息:</td>
+                    <td><input class="easyui-textbox" type="text" name="admgroupuserdescribe" required="true" missingMessage="不能为空"></input>
+                    </td>
+                </tr>
+
+            </table>
+
+            <div style="text-align:center;padding:10px">
+                <a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitAddAmdUserGroupForm()">Submit</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearAddAmdUserGroupForm()">Clear</a>
+            </div>
+        </form>
+    </div>
+    <!--基础信息窗口 end-->
+
+    <!--权限列表展示start-->
+    <div data-options="region:'center'" border="false" style="padding:0px">
+        选择权限：
+        <div class="addadmgrouproletree left">
+            <ul id="addadmgrouproletree" class="ztree"></ul>
+        </div>
+    </div>
+    <!--权限列表展示end-->
+</div>
+
+<script type="text/javascript" src="{{.staticUrl}}/js/admusergroup/addadmusergroup.js"></script>
