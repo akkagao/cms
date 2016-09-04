@@ -2,9 +2,9 @@
     此项目的设计目标主要用于需要多人协作、需要对操作权限做精确控制的管理系统使用。目前只提供了权限管理、用户组管理、
     用户管理基础功能，后续如果有可以公用的功能会陆续增加进来。
     本项目使用go语言开发
-    web框架使用 [beego](http://beego.me/)
-    前台页面使用 [easyUI](http://www.jeasyui.net/demo/380.html) （easyUI 中文网）
-    页面中使用的树组件为 [zTree](http://www.treejs.cn/v3/main.php#_zTreeInfo)
+    web框架使用 ![beego](http://beego.me/)
+    前台页面使用 ![easyUI](http://www.jeasyui.net/demo/380.html) （easyUI 中文网）
+    页面中使用的树组件为 ![zTree](http://www.treejs.cn/v3/main.php#_zTreeInfo)
 
 ## 功能介绍： 
             
