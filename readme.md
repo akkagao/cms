@@ -9,8 +9,12 @@
 ## 软件环境
 - 开发工具： VS Code
 - 数据库： mysql
+
+## 安装指南
+- doc 目录下的database.sql  是数据库初始化脚本
+- 默认账号 `admin` 密码 `111111`
+
 ## 功能介绍： 
-            
     1：管理员管理 
         管理可以使用此系统的用户
         功能：查询、新增、修改（可以直接重置密码）删除、管联用户组（管理用户组后可以拥有改组的所有权限）
@@ -24,6 +28,7 @@
             A：作为导航菜单中的目录使用（新增的时候只需要填写 权限名称 和 选择是否作为菜单）
             B：仅作为菜单（新增的时候必须填写 权限名称、请求地址、模块名称、操作名称、并选择作为菜单为 是）
             C：仅作为一个普通权限（新增的时候必须填写 权限名称、模块名称、操作名称、并选择作为菜单为 否）
+
 ## 功能截图
 - 管理员管理
 ![image](https://github.com/crazy-wolf/cms/blob/master/doc/img/user.png)
@@ -33,9 +38,6 @@
 ![image](https://github.com/crazy-wolf/cms/blob/master/doc/img/addusergroup.png)
 - 权限管理
 ![image](https://github.com/crazy-wolf/cms/blob/master/doc/img/role.png)
-
- 
-
 
 ## 待完成功能
 - [X] 管理员管理
