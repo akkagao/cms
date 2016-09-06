@@ -15,7 +15,8 @@
 </style>
 <div class="content">
     <div class="fr">
-        <h2>欢迎:{{.user.Name}}</h2>
+        <h2 style="margin-right:10px">欢迎：{{.user.Name}}</h2>
+        <a href='{{urlfor "LoginController.Loginout"}}'>退出</a>
     </div>
     <div class="main">
         <h1> XXX 管理系统 </h1>

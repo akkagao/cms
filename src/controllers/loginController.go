@@ -4,6 +4,8 @@ import (
 	"cms/src/common"
 	"cms/src/service"
 	"strconv"
+
+	"github.com/astaxie/beego"
 )
 
 type LoginController struct {
@@ -33,4 +35,12 @@ func (this *LoginController) Login() {
 		this.Ctx.SetCookie("token", token, 0)
 		this.jsonResult(SUCCESS)
 	}
+}
+
+/**
+退出登陆
+*/
+func (this *LoginController) Loginout() {
+	this.Ctx.SetCookie("token", "", 0)
+	this.redirect(beego.URLFor("LoginController.Tologin"))
 }

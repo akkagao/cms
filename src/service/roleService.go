@@ -115,9 +115,23 @@ func (this *roleService) ModifyRole(r *model.Role) error {
 */
 func (this *roleService) DeleteRole(ids []string) error {
 	idstr := strings.Join(ids, ",")
+
+	var count int
+	countSubRoleSql := "select count(1) from t_role where pid in (" + idstr + ")"
+	beego.Debug("===================")
+	beego.Debug(countSubRoleSql)
+	beego.Debug("===================")
+	o.Raw(countSubRoleSql).QueryRow(&count)
+	beego.Debug("===================")
+	beego.Debug(count)
+	beego.Debug("===================")
+	if count > 0 {
+		return &common.BizError{"不能删除有子节点的权限，请先删除所有子节点！"}
+	}
+
 	sql := "DELETE from t_role  where id in (" + idstr + ")"
 	if _, err := o.Raw(sql).Exec(); err != nil {
-		return err
+		return &common.BizError{"删除失败！"}
 	}
 	return nil
 }
@@ -126,7 +140,7 @@ func (this *roleService) DeleteRole(ids []string) error {
 权限校验
 */
 func (this *roleService) ValidateRole(controllerName, actionName string, id int64) error {
-	selectSql := "SELECT COUNT(1) FROM t_user_group_rel ur,t_role r ,t_group_role_rel gr where r.module = ? and r.action = ? and ur.userid = ? and ur.groupid = gr.groupid and r.id = gr.roleid"
+	selectSql := "SELECT COUNT(1) FROM t_user_group_rel ur,t_role r ,t_group_role_rel gr where r.module = ? and r.action = ? and ur.userid = ? and ur.groupid = gr.groupid and r.id = gr.roleid and ur.isdel = 1 and gr.isdel = 1"
 	var count int
 	o.Raw(selectSql, controllerName, actionName, id).QueryRow(&count)
 	if count > 0 {

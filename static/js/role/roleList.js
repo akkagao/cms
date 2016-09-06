@@ -155,7 +155,7 @@ function deleteRole() {
         if (result == "success") {
             $.messager.alert('操作提示', "删除成功", 'info');
         } else {
-            $.messager.alert('操作提示', "删除失败", 'warning');
+            $.messager.alert('操作提示', result, 'warning');
         }
     });
 }

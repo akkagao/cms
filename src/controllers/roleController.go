@@ -144,7 +144,7 @@ func (this *RoleController) Deleterole() {
 	ids := this.GetStrings("ids")
 
 	if err := service.RoleService.DeleteRole(ids); err != nil {
-		this.jsonResult("删除失败！")
+		this.jsonResult(err.Error())
 	}
 	this.jsonResult(SUCCESS)
 }
