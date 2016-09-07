@@ -118,13 +118,7 @@ func (this *roleService) DeleteRole(ids []string) error {
 
 	var count int
 	countSubRoleSql := "select count(1) from t_role where pid in (" + idstr + ")"
-	beego.Debug("===================")
-	beego.Debug(countSubRoleSql)
-	beego.Debug("===================")
 	o.Raw(countSubRoleSql).QueryRow(&count)
-	beego.Debug("===================")
-	beego.Debug(count)
-	beego.Debug("===================")
 	if count > 0 {
 		return &common.BizError{"不能删除有子节点的权限，请先删除所有子节点！"}
 	}
@@ -160,19 +154,21 @@ func (this *roleService) LoadMenu(id int64) []model.RoleTree {
 		return nil
 	}
 	flag := false
-	selectSql := "SELECT t.id, pid, name, roleurl , ismenu, des from t_role t where t.id != 0 and t.ismenu = 0"
+	selectSql := ""
 	for i := 0; i < len(list); i++ {
 		groupId := list[i].(string)
 		if i, err := strconv.ParseInt(groupId, 10, 64); i != 1 && err == nil {
 			flag = true
-			selectSql = "SELECT t.id, pid, name, roleurl , ismenu, des from t_role t,t_user_group_rel ug,t_group_role_rel gr where t.id != 0 and t.ismenu = 0 and t.id = gr.roleid and ug.userid=? and ug.groupid = gr.groupid and ug.isdel=1 and gr.isdel =1"
+			break
 		}
 	}
 
 	var roles []model.RoleTree
 	if flag {
+		selectSql = "SELECT DISTINCT t.id, pid, name, roleurl , ismenu, des from t_role t,t_user_group_rel ug,t_group_role_rel gr where t.id != 0 and t.ismenu = 0 and t.id = gr.roleid and ug.userid=? and ug.groupid = gr.groupid and ug.isdel=1 and gr.isdel =1"
 		_, err = o.Raw(selectSql, id).QueryRows(&roles)
 	} else {
+		selectSql = "SELECT t.id, pid, name, roleurl , ismenu, des from t_role t where t.id != 0 and t.ismenu = 0"
 		_, err = o.Raw(selectSql).QueryRows(&roles)
 	}
 
