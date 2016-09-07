@@ -49,10 +49,10 @@ func (this *BaseController) Prepare() {
 		this.admUser = admUser
 	}
 
-	//TODO 暂时判断如果是admin账号登陆就不执行任何权限校验，后续改为在某个组的用户都不做校验
-	if strings.EqualFold(this.admUser.Accout, "admin") {
-		return
-	}
+	// //TODO 暂时判断如果是admin账号登陆就不执行任何权限校验，后续改为在某个组的用户都不做校验
+	// if strings.EqualFold(service.RoleService.IsAdministrator(this.admUser.Id)) {
+	// 	return
+	// }
 
 	if strings.EqualFold(controllerName, "MainController") {
 		return

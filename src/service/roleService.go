@@ -134,6 +134,10 @@ func (this *roleService) DeleteRole(ids []string) error {
 权限校验
 */
 func (this *roleService) ValidateRole(controllerName, actionName string, id int64) error {
+	if this.isAdministrator(id) {
+		beego.Debug("用户属于超级管理员，不用校验权限")
+		return nil
+	}
 	selectSql := "SELECT COUNT(1) FROM t_user_group_rel ur,t_role r ,t_group_role_rel gr where r.module = ? and r.action = ? and ur.userid = ? and ur.groupid = gr.groupid and r.id = gr.roleid and ur.isdel = 1 and gr.isdel = 1"
 	var count int
 	o.Raw(selectSql, controllerName, actionName, id).QueryRow(&count)
@@ -148,32 +152,19 @@ func (this *roleService) ValidateRole(controllerName, actionName string, id int6
 */
 func (this *roleService) LoadMenu(id int64) []model.RoleTree {
 
-	var list orm.ParamsList
-	num, err := o.Raw("SELECT groupid from t_user_group_rel t where t.userid = ?", id).ValuesFlat(&list)
-	if err != nil || num < 1 {
-		return nil
-	}
-	flag := false
-	selectSql := ""
-	for i := 0; i < len(list); i++ {
-		groupId := list[i].(string)
-		if i, err := strconv.ParseInt(groupId, 10, 64); i != 1 && err == nil {
-			flag = true
-			break
-		}
-	}
-
 	var roles []model.RoleTree
-	if flag {
-		selectSql = "SELECT DISTINCT t.id, pid, name, roleurl , ismenu, des from t_role t,t_user_group_rel ug,t_group_role_rel gr where t.id != 0 and t.ismenu = 0 and t.id = gr.roleid and ug.userid=? and ug.groupid = gr.groupid and ug.isdel=1 and gr.isdel =1"
-		_, err = o.Raw(selectSql, id).QueryRows(&roles)
+	if this.isAdministrator(id) {
+		selectSql := "SELECT t.id, pid, name, roleurl , ismenu, des from t_role t where t.id != 0 and t.ismenu = 0"
+		if _, err := o.Raw(selectSql).QueryRows(&roles); err != nil {
+			beego.Error("查询权限树的role列表异常，error message：", err.Error())
+			return roles
+		}
 	} else {
-		selectSql = "SELECT t.id, pid, name, roleurl , ismenu, des from t_role t where t.id != 0 and t.ismenu = 0"
-		_, err = o.Raw(selectSql).QueryRows(&roles)
-	}
-
-	if err != nil {
-		beego.Error("查询权限树的role列表异常，error message：", err.Error())
+		selectSql := "SELECT DISTINCT t.id, pid, name, roleurl , ismenu, des from t_role t,t_user_group_rel ug,t_group_role_rel gr where t.id != 0 and t.ismenu = 0 and t.id = gr.roleid and ug.userid=? and ug.groupid = gr.groupid and ug.isdel=1 and gr.isdel =1"
+		if _, err := o.Raw(selectSql, id).QueryRows(&roles); err != nil {
+			beego.Error("查询权限树的role列表异常，error message：", err.Error())
+			return roles
+		}
 	}
 
 	pidMap := make(map[int64]bool, 10)
@@ -194,4 +185,26 @@ func (this *roleService) LoadMenu(id int64) []model.RoleTree {
 	}
 
 	return roles
+}
+
+/*
+判断当前用户是否属于 超级管理员
+*/
+func (this *roleService) isAdministrator(id int64) bool {
+
+	flag := false
+	var list orm.ParamsList
+	num, err := o.Raw("SELECT groupid from t_user_group_rel t where t.userid = ? and t.isdel =1", id).ValuesFlat(&list)
+	if err != nil || num < 1 {
+		return flag
+	}
+	for i := 0; i < len(list); i++ {
+		groupId := list[i].(string)
+		if id, err := strconv.ParseInt(groupId, 10, 64); err == nil {
+			if id == 1 {
+				return true
+			}
+		}
+	}
+	return flag
 }
