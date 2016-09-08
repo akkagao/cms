@@ -6,6 +6,7 @@ import (
 	"cms/src/service"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/validation"
 )
 
 type RoleController struct {
@@ -79,6 +80,21 @@ func (this *RoleController) Addrole() {
 	module := this.GetString("module")
 	action := this.GetString("action")
 
+	//参数校验
+	valid := validation.Validation{}
+	valid.Required(name, "权限名称").Message("不能为空")
+	valid.MaxSize(name, 20, "权限名称").Message("长度不能超过20个字符")
+	valid.Required(describe, "描述信息").Message("不能为空")
+	valid.MaxSize(describe, 50, "描述信息").Message("长度不能超过50个字符")
+
+	if valid.HasErrors() {
+		// 如果有错误信息，证明验证没通过
+		// 打印错误信息
+		for _, err := range valid.Errors {
+			this.jsonResult((err.Key + err.Message))
+		}
+	}
+
 	role := &model.Role{
 		Pid:     pid,
 		Name:    name,
@@ -121,6 +137,22 @@ func (this *RoleController) Modify() {
 	describe := this.GetString("describe")
 	module := this.GetString("module")
 	action := this.GetString("action")
+
+	//参数校验
+	valid := validation.Validation{}
+	valid.Required(name, "权限名称").Message("不能为空")
+	valid.MaxSize(name, 20, "权限名称").Message("长度不能超过20个字符")
+	valid.Required(describe, "描述信息").Message("不能为空")
+	valid.MaxSize(describe, 50, "描述信息").Message("长度不能超过50个字符")
+
+	if valid.HasErrors() {
+		// 如果有错误信息，证明验证没通过
+		// 打印错误信息
+		for _, err := range valid.Errors {
+			this.jsonResult((err.Key + err.Message))
+		}
+	}
+
 	role := &model.Role{
 		Id:      id,
 		Pid:     pid,

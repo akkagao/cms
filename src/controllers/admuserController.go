@@ -5,6 +5,8 @@ import (
 	"cms/src/model"
 	"cms/src/service"
 	"time"
+
+	"github.com/astaxie/beego/validation"
 )
 
 type AdmUserController struct {
@@ -52,6 +54,32 @@ func (this *AdmUserController) Addadmuser() {
 	department := this.GetString("department")
 	password := this.GetString("password")
 	groupIds := this.GetString("ids")
+
+	//参数校验
+	valid := validation.Validation{}
+	valid.Required(account, "账号").Message("不能为空")
+	valid.MaxSize(account, 20, "账号").Message("长度不能超过20个字符")
+	valid.Required(mail, "邮箱").Message("不能为空")
+	valid.MaxSize(mail, 50, "邮箱").Message("长度不能超过50个字符")
+	valid.Email(mail, "邮箱").Message("格式错误")
+	valid.Required(name, "姓名").Message("不能为空")
+	valid.MaxSize(name, 20, "姓名").Message("长度不能超过20个字符")
+	valid.Required(phone, "手机号码").Message("不能为空")
+	valid.MaxSize(phone, 15, "手机号码").Message("长度不能超过15个字符")
+	valid.Required(department, "部门").Message("不能为空")
+	valid.MaxSize(department, 20, "部门").Message("长度不能超过20个字符")
+	valid.Required(password, "密码").Message("不能为空")
+	valid.MaxSize(password, 20, "密码").Message("长度不能超过20个字符")
+	valid.MinSize(groupIds, 1, "组信息").Message("请至少选择一个")
+
+	if valid.HasErrors() {
+		// 如果有错误信息，证明验证没通过
+		// 打印错误信息
+		for _, err := range valid.Errors {
+			this.jsonResult((err.Key + err.Message))
+		}
+	}
+
 	password = common.EncodeMessageMd5(password)
 
 	admuser := &model.Admuser{
@@ -92,6 +120,35 @@ func (this *AdmUserController) Modifyyadmuser() {
 	department := this.GetString("department")
 	password := this.GetString("password")
 	groupIds := this.GetString("groupids")
+
+	//参数校验
+	valid := validation.Validation{}
+	valid.Required(account, "账号").Message("不能为空")
+	valid.MaxSize(account, 20, "账号").Message("长度不能超过20个字符")
+	valid.Required(mail, "邮箱").Message("不能为空")
+	valid.MaxSize(mail, 50, "邮箱").Message("长度不能超过50个字符")
+	valid.Email(mail, "邮箱").Message("格式错误")
+	valid.Required(name, "姓名").Message("不能为空")
+	valid.MaxSize(name, 20, "姓名").Message("长度不能超过20个字符")
+	valid.Required(phone, "手机号码").Message("不能为空")
+	valid.MaxSize(phone, 15, "手机号码").Message("长度不能超过15个字符")
+	valid.Required(department, "部门").Message("不能为空")
+	valid.MaxSize(department, 20, "部门").Message("长度不能超过20个字符")
+
+	if len(password) > 0 {
+		valid.Required(password, "密码").Message("不能为空")
+		valid.MaxSize(password, 20, "密码").Message("长度不能超过20个字符")
+	}
+
+	valid.MinSize(groupIds, 1, "组信息").Message("请至少选择一个")
+
+	if valid.HasErrors() {
+		// 如果有错误信息，证明验证没通过
+		// 打印错误信息
+		for _, err := range valid.Errors {
+			this.jsonResult((err.Key + err.Message))
+		}
+	}
 
 	if len(password) != 0 {
 		password = common.EncodeMessageMd5(password)

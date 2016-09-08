@@ -5,6 +5,8 @@ import (
 	"cms/src/model"
 	"cms/src/service"
 	"time"
+
+	"github.com/astaxie/beego/validation"
 )
 
 type AdmUserGroupController struct {
@@ -46,8 +48,24 @@ func (this *AdmUserGroupController) Addadmusergroup() {
 	groupname := this.GetString("groupname")
 	describe := this.GetString("describe")
 
+	//参数校验
+	valid := validation.Validation{}
+	valid.Required(groupname, "管理员组名称").Message("不能为空")
+	valid.MaxSize(groupname, 20, "管理员组名称").Message("长度不能超过20个字符")
+	valid.Required(describe, "描述信息").Message("不能为空")
+	valid.MaxSize(describe, 50, "描述信息").Message("长度不能超过50个字符")
+	valid.MinSize(ids, 1, "权限").Message("请至少选择一个")
+
+	if valid.HasErrors() {
+		// 如果有错误信息，证明验证没通过
+		// 打印错误信息
+		for _, err := range valid.Errors {
+			this.jsonResult((err.Key + err.Message))
+		}
+	}
+
 	admusergroup := &model.Admusergroup{
-		Groupname: groupname,
+		Groupname:  groupname,
 		Des:        describe,
 		Createtime: time.Now(),
 		Updatetime: time.Now(),
@@ -77,8 +95,24 @@ func (this *AdmUserGroupController) Modifyadmusergroup() {
 	describe := this.GetString("describe")
 	id, _ := this.GetInt64("id")
 
+	//参数校验
+	valid := validation.Validation{}
+	valid.Required(groupname, "管理员组名称").Message("不能为空")
+	valid.MaxSize(groupname, 20, "管理员组名称").Message("长度不能超过20个字符")
+	valid.Required(describe, "描述信息").Message("不能为空")
+	valid.MaxSize(describe, 50, "描述信息").Message("长度不能超过50个字符")
+	valid.MinSize(ids, 1, "权限").Message("请至少选择一个")
+
+	if valid.HasErrors() {
+		// 如果有错误信息，证明验证没通过
+		// 打印错误信息
+		for _, err := range valid.Errors {
+			this.jsonResult((err.Key + err.Message))
+		}
+	}
+
 	admusergroup := &model.Admusergroup{
-		Id: id,
+		Id:         id,
 		Groupname:  groupname,
 		Des:        describe,
 		Createtime: time.Now(),
